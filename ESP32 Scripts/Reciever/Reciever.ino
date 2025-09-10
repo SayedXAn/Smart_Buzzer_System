@@ -1,6 +1,7 @@
-// Receiver ESP32 - clean single-char serial protocol + remote toggle
 #include <SPI.h>
 #include <RF24.h>
+#include <WiFi.h>
+#include <HTTPClient.h>
 
 #define CE_PIN 5
 #define CSN_PIN 17
@@ -9,75 +10,71 @@
 RF24 radio(CE_PIN, CSN_PIN);
 const byte addresses[][6] = {"1Node", "2Node"};
 
-const char REMOTE_ID = 'H'; // remote buzzer ID
-char winnerID[2] = { '\0', '\0' };
+const char REMOTE_ID = 'H'; // remote buzzer
+
+char winnerID[2] = {'\0', '\0'};
 bool winnerLocked = false;
 bool isGameOn = false;
+
+// WiFi settings
+const char* ssid = "Experience";
+const char* password = "payforpassword";
+const char* flaskServer = "http://192.168.0.103:5000"; // Flask server URL
 
 void setup() {
   Serial.begin(115200);
   pinMode(LED_PIN, OUTPUT);
   digitalWrite(LED_PIN, LOW);
 
-  if (!radio.begin() || !radio.isChipConnected()) {
-    // no debug prints per request - hang if radio fails
+  // Connect WiFi
+  WiFi.begin(ssid, password);
+  Serial.print("Connecting WiFi");
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(500);
+    Serial.print(".");
+  }
+  Serial.println("\nWiFi connected.");
+
+  // Initialize NRF24
+  if (!radio.begin()) {
+    Serial.println("NRF24 init failed!");
     while (1);
   }
-
   radio.setPALevel(RF24_PA_LOW);
   radio.setDataRate(RF24_1MBPS);
   radio.openReadingPipe(1, addresses[1]);  // From buzzers
   radio.openWritingPipe(addresses[0]);     // To buzzers
   radio.startListening();
 
-  delay(200);
-  // Send initial state to Unity (F = game off)
-  Serial.write('F');
-  Serial.write('\n');
+  Serial.println("Receiver ready!");
 }
 
 void loop() {
-  // Handle incoming serial commands from Unity (single char commands)
-  if (Serial.available() > 0) {
-    char cmd = Serial.read();
-    if (cmd == 'n') {
-      startGame();
-    } else if (cmd == 'f') {
-      stopGame();
-    } else if (cmd == 'q') { // status query from Unity
-      if (isGameOn) {
-        Serial.write('N');
-        Serial.write('\n');
-      } else {
-        Serial.write('F');
-        Serial.write('\n');
-      }
-    }
-  }
-
-  // Handle radio messages
-  if (radio.available()) {
+  // Always check radio
+  while (radio.available()) {
     char incoming = 0;
-    radio.read(&incoming, 1); // read exactly one byte
+    radio.read(&incoming, 1);
+    Serial.print("Received buzzer: ");
+    Serial.println(incoming);
 
-    // Remote control buzzer toggles game state
+    // Remote always toggles game
     if (incoming == REMOTE_ID) {
-      if (!isGameOn) startGame();
-      else stopGame();
-      return; // do not treat remote as winner
+      Serial.println("Remote pressed!");
+      if (isGameOn) stopGame();
+      else startGame();
+      continue; // allow more packets in the buffer
     }
 
-    // Normal buzzer pressed: only count if game on and no winner locked
+    // Normal buzzer
     if (isGameOn && !winnerLocked) {
       winnerLocked = true;
       winnerID[0] = incoming;
       winnerID[1] = '\0';
 
-      // Send single char + newline to Unity
-      Serial.write(winnerID[0]);
-      Serial.write('\n');
+      Serial.print("Winner detected: ");
+      Serial.println(winnerID);
 
-      // Reply to buzzers to indicate winner (send winner char multiple times)
+      // Notify buzzers
       radio.stopListening();
       for (int i = 0; i < 3; ++i) {
         radio.write(&winnerID[0], 1);
@@ -85,35 +82,55 @@ void loop() {
       }
       radio.startListening();
 
-      // Visual feedback on receiver
+      // LED feedback
       digitalWrite(LED_PIN, HIGH);
-      delay(120);
+      delay(100);
       digitalWrite(LED_PIN, LOW);
 
-      // stop game until next start (receiver will require startGame to unlock)
+      // Send winner to Flask
+      sendWinnerToFlask(winnerID[0]);
+
+      // Stop game until next start
       isGameOn = false;
-      // keep winnerLocked true so no further winners until startGame resets it
+      winnerLocked = false; // unlock for next round
+      break; // exit inner while to continue main loop
     }
   }
+
+  // Optional serial commands
+  if (Serial.available() > 0) {
+    char cmd = Serial.read();
+    if (cmd == 'n') startGame();
+    else if (cmd == 'f') stopGame();
+  }
+
+  delay(5); // short loop delay
 }
 
+
+
+
+// --- Game control functions ---
 void startGame() {
   isGameOn = true;
   winnerLocked = false;
   winnerID[0] = '\0';
 
-  // flush any stale radio data
-  clearRadioBuffer();
+  // Flush stale NRF packets
+  while (radio.available()) {
+    char dummy;
+    radio.read(&dummy, 1);
+    delay(2);
+  }
 
-  // notify buzzers to enable
+  // Notify buzzers
   radio.stopListening();
   char startSignal = 's';
   radio.write(&startSignal, 1);
   radio.startListening();
 
-  // notify Unity
-  Serial.write('N');
-  Serial.write('\n');
+  Serial.println("Game started!");
+  sendGameStateToFlask("N");
 }
 
 void stopGame() {
@@ -121,22 +138,35 @@ void stopGame() {
   winnerLocked = false;
   winnerID[0] = '\0';
 
-  // notify buzzers to disable
+  // Notify buzzers
   radio.stopListening();
   char stopSignal = 'x';
   radio.write(&stopSignal, 1);
   radio.startListening();
 
-  // notify Unity
-  Serial.write('F');
-  Serial.write('\n');
+  Serial.println("Game stopped!");
+  sendGameStateToFlask("F");
 }
 
-void clearRadioBuffer() {
-  // drain any packets
-  while (radio.available()) {
-    char dummy;
-    radio.read(&dummy, 1);
-    delay(2);
-  }
+// --- Flask communication ---
+void sendWinnerToFlask(char winner) {
+  if (WiFi.status() != WL_CONNECTED) return;
+
+  HTTPClient http;
+  String url = String(flaskServer) + "/winner?buzzer=" + winner;
+  http.begin(url);
+  int code = http.GET();
+  if (code > 0) Serial.print("Flask winner response code: "), Serial.println(code);
+  http.end();
+}
+
+void sendGameStateToFlask(String state) {
+  if (WiFi.status() != WL_CONNECTED) return;
+
+  HTTPClient http;
+  String url = String(flaskServer) + "/game_state?state=" + state;
+  http.begin(url);
+  int code = http.GET();
+  if (code > 0) Serial.print("Flask game_state response code: "), Serial.println(code);
+  http.end();
 }
