@@ -1497,6 +1497,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0ba800fe106f1844caffc081c23a54ae, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  statusText: {fileID: 890002986}
+  serverUrl: http://127.0.0.1:5000
 --- !u!1 &2042053625
 GameObject:
   m_ObjectHideFlags: 0

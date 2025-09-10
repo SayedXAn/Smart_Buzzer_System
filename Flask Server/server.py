@@ -6,35 +6,44 @@ CORS(app)
 
 game_state = {
     "isGameOn": False,
-    "winner": None
+    "winners": []  # queue of buzzer presses
 }
 
-@app.route("/start_game", methods=["POST"])
+# --- Game control endpoints ---
+@app.route('/start_game', methods=['POST'])
 def start_game():
-    game_state["isGameOn"] = True
-    game_state["winner"] = None
+    game_state['isGameOn'] = True
+    game_state['winners'] = []
+    print("Game started")
     return jsonify({"status": "game started"})
 
-@app.route("/stop_game", methods=["POST"])
+@app.route('/stop_game', methods=['POST'])
 def stop_game():
-    game_state["isGameOn"] = False
+    game_state['isGameOn'] = False
+    print("Game stopped")
     return jsonify({"status": "game stopped"})
 
-@app.route("/press_buzzer", methods=["POST"])
+# --- Buzzer press endpoint ---
+@app.route('/press_buzzer', methods=['POST'])
 def press_buzzer():
-    buzzer_id = request.json.get("id")
-    if not game_state["isGameOn"]:
-        return jsonify({"status": "game not active"}), 400
+    data = request.get_json()
+    buzzer_id = data.get('id')
+    if buzzer_id and game_state['isGameOn']:
+        game_state['winners'].append(buzzer_id)
+        print(f"Buzzer pressed: {buzzer_id}")
+    return jsonify({"status": "ok"})
 
-    if game_state["winner"] is None:
-        game_state["winner"] = buzzer_id
-        return jsonify({"winner": buzzer_id})
-    else:
-        return jsonify({"status": "already has winner"}), 400
-
-@app.route("/state", methods=["GET"])
+# --- State polling endpoint for Unity ---
+@app.route('/state', methods=['GET'])
 def state():
-    return jsonify(game_state)
+    # Return all pending presses and clear them after polling
+    winners_to_send = game_state['winners'][:]
+    game_state['winners'] = []
+    return jsonify({
+        "isGameOn": game_state['isGameOn'],
+        "winners": winners_to_send
+    })
 
-if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000)
+if __name__ == '__main__':
+    # Start server on all interfaces, port 5000
+    app.run(host='0.0.0.0', port=5000)

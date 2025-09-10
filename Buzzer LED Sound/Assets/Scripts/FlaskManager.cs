@@ -1,12 +1,14 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.Networking;
 using TMPro;
-using System.Collections;
 
 public class FlaskGameManager : MonoBehaviour
 {
     public TMP_Text statusText;
-    string flaskUrl = "http://127.0.0.1:5000/game_state";
+    public string serverUrl = "http://127.0.0.1:5000";
+
+    private bool gameOn = false;
 
     void Start()
     {
@@ -17,29 +19,45 @@ public class FlaskGameManager : MonoBehaviour
     {
         while (true)
         {
-            using (UnityWebRequest www = UnityWebRequest.Get(flaskUrl))
+            using (UnityWebRequest www = UnityWebRequest.Get(serverUrl + "/state"))
             {
                 yield return www.SendWebRequest();
 
-                if (www.result == UnityWebRequest.Result.Success)
+                if (www.result != UnityWebRequest.Result.Success)
                 {
+                    Debug.LogError("Error polling state: " + www.error);
+                }
+                else
+                {
+                    // Parse JSON
                     string json = www.downloadHandler.text;
-                    GameState state = JsonUtility.FromJson<GameState>(json);
-                    if (statusText != null)
+                    var data = JsonUtility.FromJson<GameState>(json);
+
+                    gameOn = data.isGameOn;
+
+                    if (gameOn)
+                        statusText.text = "Game Started";
+                    else
+                        statusText.text = "Game Stopped";
+
+                    // Check winners
+                    if (data.winners != null && data.winners.Length > 0)
                     {
-                        if (state.winner != null) statusText.text = "Winner: " + state.winner;
-                        else statusText.text = "Game " + (state.is_on ? "ON" : "OFF");
+                        string winner = data.winners[0];
+                        statusText.text = "Winner: " + winner;
+                        Debug.Log("Winner: " + winner);
                     }
                 }
             }
-            yield return new WaitForSeconds(0.5f); // poll every 500ms
+
+            yield return new WaitForSeconds(0.1f); // Poll every 100ms
         }
     }
 
     [System.Serializable]
     public class GameState
     {
-        public bool is_on;
-        public string winner;
+        public bool isGameOn;
+        public string[] winners;
     }
 }
