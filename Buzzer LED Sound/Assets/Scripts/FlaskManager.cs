@@ -9,11 +9,38 @@ public class FlaskManager : MonoBehaviour
     public TMP_Text statusText;
     public TMP_Text winnerText;
 
-    private string flaskURL = "http://127.0.0.1:5000/state";  // your Flask server
+    private string flaskURL = "http://127.0.0.1:5000/state";
 
     void Start()
     {
         StartCoroutine(PollGameState());
+    }
+    void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.N))
+        {
+            StartCoroutine(SendUnityCommand("unity_start"));
+        }
+        if (Input.GetKeyDown(KeyCode.F))
+        {
+            StartCoroutine(SendUnityCommand("unity_stop"));
+        }
+    }
+    IEnumerator SendUnityCommand(string endpoint)
+    {
+        string furl = "http://127.0.0.1:5000";
+        using (UnityWebRequest www = UnityWebRequest.PostWwwForm(furl + "/" + endpoint, ""))
+        {
+            yield return www.SendWebRequest();
+            if (www.result == UnityWebRequest.Result.Success)
+            {
+                Debug.Log("Unity command sent: " + endpoint);
+            }
+            else
+            {
+                Debug.LogError("Error sending Unity command: " + www.error);
+            }
+        }
     }
 
     IEnumerator PollGameState()

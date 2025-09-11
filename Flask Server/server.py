@@ -25,6 +25,22 @@ def remote_toggle():
         game_state['winner'] = None
         print("Remote pressed -> Game stopped, winner cleared")
         return jsonify({"status": "game stopped"})
+    
+@app.route('/unity_start', methods=['POST'])
+def unity_start():
+    game_state['isGameOn'] = True
+    game_state['winner'] = None
+    print("Unity command -> Game started, winner cleared")
+    return jsonify({"status": "game started"})
+
+    
+
+@app.route('/unity_stop', methods=['POST'])
+def unity_stop():
+    game_state['isGameOn'] = False
+    game_state['winner'] = None
+    print("Unity command -> Game stopped, winner cleared")
+    return jsonify({"status": "game stopped"})
 
 
 # --- Buzzer press endpoint ---
