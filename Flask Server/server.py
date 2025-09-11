@@ -6,7 +6,7 @@ CORS(app)
 
 game_state = {
     "isGameOn": False,
-    "winners": []  # queue of buzzer presses
+    "winners": []
 }
 
 # --- Game control endpoints ---
