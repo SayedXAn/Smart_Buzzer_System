@@ -1,12 +1,13 @@
 using System.Collections;
+using TMPro;
 using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.UI;
 
 public class FlaskManager : MonoBehaviour
 {
-    public Text statusText;
-    public Text winnerText;
+    public TMP_Text statusText;
+    public TMP_Text winnerText;
 
     private string flaskURL = "http://127.0.0.1:5000/state";  // your Flask server
 
