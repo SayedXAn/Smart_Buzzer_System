@@ -1390,8 +1390,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 180
-  m_fontSizeBase: 180
+  m_fontSize: 130
+  m_fontSizeBase: 130
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -1626,8 +1626,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0ba800fe106f1844caffc081c23a54ae, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  statusText: {fileID: 890002986}
-  winnerText: {fileID: 1526239871}
+  statusText: {fileID: 1526239871}
+  winnerText: {fileID: 890002986}
 --- !u!1 &2042053625
 GameObject:
   m_ObjectHideFlags: 0

@@ -43,7 +43,11 @@ def press_buzzer():
     else:
         print(f"Ignored buzzer {buzzer_id}, game not active")
 
-    return jsonify({"status": "ok"})
+    return jsonify({
+        "status": "ok",
+        "winner": game_state['winner']
+    })
+
 
 
 # --- State polling endpoint for Unity ---
