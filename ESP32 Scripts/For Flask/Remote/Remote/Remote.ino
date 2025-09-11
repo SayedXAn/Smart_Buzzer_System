@@ -9,6 +9,9 @@ const char* ssid = "Experience";
 const char* password = "payforpassword";
 const char* flaskServer = "http://192.168.0.103:5000";
 
+unsigned long lastPressTime = 0;
+const unsigned long cooldown = 3000; 
+
 void setup() {
   Serial.begin(115200);
   pinMode(TRIGGER_PIN, INPUT_PULLUP);
@@ -26,8 +29,11 @@ void setup() {
 
 void loop() {
   if (digitalRead(TRIGGER_PIN) == LOW) {
-    sendRemoteToggle();
-    delay(500); // debounce
+    unsigned long now = millis();
+    if (now - lastPressTime > cooldown) {
+      lastPressTime = now; // update cooldown
+      sendRemoteToggle(); // your HTTP POST function
+    }
   }
 }
 
