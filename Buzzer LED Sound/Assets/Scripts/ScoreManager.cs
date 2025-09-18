@@ -4,7 +4,7 @@ using UnityEngine.UI;
 
 public class ScoreManager : MonoBehaviour
 {
-    public int[] scores = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+    public float[] scores = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
     public TMP_InputField[] playersIF;
     public TMP_Text[] playerScoreboard;
     public TMP_Text[] miniScoreboard;
@@ -22,7 +22,7 @@ public class ScoreManager : MonoBehaviour
 
         for (int i = 0; i < playerScoreboard.Length; i++)
         {
-            playerScoreboard[i].text = names[i] + ": 0";
+            playerScoreboard[i].text = names[i] + ": 0.0";
             miniScoreboard[i].text = scores[i].ToString();
             TextMeshProUGUI placeholderText = playersIF[i].placeholder as TextMeshProUGUI;
             placeholderText.text = names[i];
@@ -36,8 +36,8 @@ public class ScoreManager : MonoBehaviour
             string input = playersIF[i].text.Trim();
             if (!string.IsNullOrEmpty(input))
             {
-                int value;
-                if (int.TryParse(input, out value))
+                float value;
+                if (float.TryParse(input, out value))
                 {
                     scores[i] += value;
                     playerScoreboard[i].text = names[i] + ": " + scores[i].ToString();
