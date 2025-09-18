@@ -16,6 +16,7 @@ public class FlaskManager : MonoBehaviour
     void Start()
     {
         StartCoroutine(PollGameState());
+
         DOTween.Init();
     }
     void Update()
@@ -97,10 +98,6 @@ public class FlaskManager : MonoBehaviour
             if(alphabets[i] == id)
             {
                 winnerText.text = scoreManager.names[i];
-                //Sequence mySequence = DOTween.Sequence();
-                //mySequence.Append(winnerText.transform.DOScale(1.5f, 1f));
-                //mySequence.Append(winnerText.transform.DOScale(0.75f, 1f));
-                
                 break;
             }
         }
@@ -113,5 +110,5 @@ public class FlaskManager : MonoBehaviour
 public class GameState
 {
     public bool isGameOn;
-    public string winner;  // single winner, not array
+    public string winner;
 }
