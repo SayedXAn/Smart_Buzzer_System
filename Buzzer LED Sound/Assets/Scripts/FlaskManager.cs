@@ -3,9 +3,11 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.UI;
+using DG.Tweening;
 
 public class FlaskManager : MonoBehaviour
 {
+    public ScoreManager scoreManager;
     public TMP_Text statusText;
     public TMP_Text winnerText;
 
@@ -14,6 +16,7 @@ public class FlaskManager : MonoBehaviour
     void Start()
     {
         StartCoroutine(PollGameState());
+        DOTween.Init();
     }
     void Update()
     {
@@ -62,16 +65,18 @@ public class FlaskManager : MonoBehaviour
 
                     if (state.isGameOn)
                     {
-                        statusText.text = "Game Started";
+                        statusText.text = "Ready";
                         winnerText.text = "";
                     }
                     else
                     {
-                        statusText.text = "Game Stopped";
+                        statusText.text = "";
 
                         if (!string.IsNullOrEmpty(state.winner))
                         {
-                            winnerText.text = "Winner: " + state.winner;
+
+                            //winnerText.text = "Winner: " + state.winner;
+                            AssignNamesToState(state.winner);
                         }
                         else
                         {
@@ -84,7 +89,25 @@ public class FlaskManager : MonoBehaviour
             yield return new WaitForSeconds(1f); // poll every second
         }
     }
+    public void AssignNamesToState(string id)
+    {
+        string[] alphabets = { "A", "B", "C", "D", "E", "F", "G", "H", "I", "J" };
+        for(int i = 0; i < alphabets.Length; i++)
+        {
+            if(alphabets[i] == id)
+            {
+                winnerText.text = scoreManager.names[i];
+                //Sequence mySequence = DOTween.Sequence();
+                //mySequence.Append(winnerText.transform.DOScale(1.5f, 1f));
+                //mySequence.Append(winnerText.transform.DOScale(0.75f, 1f));
+                
+                break;
+            }
+        }
+    }
 }
+
+
 
 [System.Serializable]
 public class GameState
