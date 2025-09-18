@@ -11,17 +11,4 @@ public class GameManager : MonoBehaviour
     {
         strokeImage.sprite = strokes[1];
     }
-    void Update()
-    {
-        if(Input.GetKeyDown(KeyCode.N))
-        {
-            GetComponent<SerialGameManager>().SendToReceiver('n');
-            strokeImage.sprite = strokes[0];
-        }
-        if (Input.GetKeyDown(KeyCode.F))
-        {
-            GetComponent<SerialGameManager>().SendToReceiver('f');
-            strokeImage.sprite = strokes[1];
-        }
-    }
 }
