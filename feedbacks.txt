@@ -1,0 +1,4 @@
+fraction score
+text blink
+stroke
+background theme as per program
