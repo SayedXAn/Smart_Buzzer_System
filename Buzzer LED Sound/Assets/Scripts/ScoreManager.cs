@@ -9,6 +9,7 @@ public class ScoreManager : MonoBehaviour
     public TMP_Text[] playerScoreboard;
     public TMP_Text[] miniScoreboard;
     public string[] names;
+    public AudioSource AS;
 
     private void Start()
     {
@@ -28,6 +29,7 @@ public class ScoreManager : MonoBehaviour
             placeholderText.text = names[i];
         }
     }
+
 
     public void UpdateScore()
     {
@@ -49,6 +51,14 @@ public class ScoreManager : MonoBehaviour
                 }
                 playersIF[i].text = "";
             }
+        }
+        
+    }
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            AS.Play();
         }
     }
 

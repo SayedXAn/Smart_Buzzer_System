@@ -10,9 +10,9 @@ Adafruit_NeoPixel strip(NUM_LEDS, LED_PIN, NEO_GRB + NEO_KHZ800);
 
 const char* ssid = "Experience";
 const char* password = "payforpassword";
-const char* flaskServer = "http://192.168.0.102:5000";
+const char* flaskServer = "http://192.168.0.104:5000";
 
-String myID = "G"; // Unique buzzer ID
+String myID = "J"; // Unique buzzer ID
 bool gameActive = false;
 
 void setup() {
@@ -61,6 +61,7 @@ void sendBuzzerPress() {
     }
   } else {
     Serial.println("Error sending press: " + String(httpResponseCode));
+    
   }
 
   http.end();

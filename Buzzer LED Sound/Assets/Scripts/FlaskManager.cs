@@ -10,7 +10,11 @@ public class FlaskManager : MonoBehaviour
     public ScoreManager scoreManager;
     public TMP_Text statusText;
     public TMP_Text winnerText;
-
+    public TMP_Text adminWinnerText;
+    public TMP_Text adminOnOff;
+    public TMP_Text adminLog;
+    public AudioSource AS;
+    bool played = false;
     private string flaskURL = "http://127.0.0.1:5000/state";
 
     void Start()
@@ -58,26 +62,31 @@ public class FlaskManager : MonoBehaviour
                 if (www.result != UnityWebRequest.Result.Success)
                 {
                     Debug.LogError("Flask request failed: " + www.error);
+                    adminLog.text = www.error;
                 }
                 else
                 {
                     string json = www.downloadHandler.text;
                     GameState state = JsonUtility.FromJson<GameState>(json);
-
+                    adminLog.text = json;
                     if (state.isGameOn)
                     {
                         statusText.text = "Ready";
+                        adminOnOff.text = "Ready";
                         winnerText.text = "";
+                        adminWinnerText.text = "---";
+                        played = false;
+                        adminLog.text += "played: false";
                     }
                     else
                     {
                         statusText.text = "";
+                        adminOnOff.text = "Game Off";
 
                         if (!string.IsNullOrEmpty(state.winner))
                         {
-
                             //winnerText.text = "Winner: " + state.winner;
-                            AssignNamesToState(state.winner);
+                            AssignNamesToState(state.winner);                            
                         }
                         else
                         {
@@ -98,6 +107,13 @@ public class FlaskManager : MonoBehaviour
             if(alphabets[i] == id)
             {
                 winnerText.text = scoreManager.names[i];
+                adminWinnerText.text = scoreManager.names[i];
+                if (!played)
+                {
+                    AS.Play();
+                    played = true;
+                    adminLog.text += "played: true";
+                }
                 break;
             }
         }
