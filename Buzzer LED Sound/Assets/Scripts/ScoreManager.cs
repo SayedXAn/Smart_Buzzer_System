@@ -1,6 +1,7 @@
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
+using System.IO;
 
 public class ScoreManager : MonoBehaviour
 {
@@ -10,6 +11,8 @@ public class ScoreManager : MonoBehaviour
     public TMP_Text[] miniScoreboard;
     public string[] names;
     public AudioSource AS;
+    public string fileName = "names.txt";
+    private List<string> names_ = new List<string>();
 
     private void Start()
     {
@@ -21,13 +24,17 @@ public class ScoreManager : MonoBehaviour
             }
         }
 
-        for (int i = 0; i < playerScoreboard.Length; i++)
+        FetchNames();
+
+        //for (int i = 0; i < playerScoreboard.Length; i++)
+        for (int i = 0; i < names.Length; i++)
         {
             playerScoreboard[i].text = names[i] + ": 0.0";
             miniScoreboard[i].text = scores[i].ToString();
             TextMeshProUGUI placeholderText = playersIF[i].placeholder as TextMeshProUGUI;
             placeholderText.text = names[i];
         }
+
     }
 
 
@@ -60,6 +67,46 @@ public class ScoreManager : MonoBehaviour
         {
             AS.Play();
         }
+    }
+
+    
+
+    private void FetchNames()
+    {
+        string filePath = Path.Combine(Application.dataPath, fileName);
+
+        if (File.Exists(filePath))
+        {
+            // Read all lines
+            string[] lines = File.ReadAllLines(filePath);
+
+            // Trim and store valid names
+            foreach (string line in lines)
+            {
+                string trimmed = line.Trim();
+                if (!string.IsNullOrEmpty(trimmed))
+                    names_.Add(trimmed);
+            }
+
+            Debug.Log($"Loaded {names_.Count} names:");
+            foreach (string n in names)
+                Debug.Log(n);
+        }
+        else
+        {
+            Debug.LogError("File not found at: " + filePath);
+        }
+
+        names = new string[names_.Count];
+        for(int i = 0; i < names.Length; i++)
+        {
+            names[i] = names_[i];
+        }
+    }
+
+    public List<string> GetNames()
+    {
+        return names_;
     }
 
 }
