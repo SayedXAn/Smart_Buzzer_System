@@ -71,8 +71,8 @@ public class FlaskManager : MonoBehaviour
                     adminLog.text = json;
                     if (state.isGameOn)
                     {
-                        statusText.text = "Ready";
-                        adminOnOff.text = "Ready";
+                        statusText.text = "READY";
+                        adminOnOff.text = "READY";
                         winnerText.text = "";
                         adminWinnerText.text = "---";
                         played = false;
