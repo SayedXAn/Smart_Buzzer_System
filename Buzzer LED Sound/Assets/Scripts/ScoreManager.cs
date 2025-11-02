@@ -7,6 +7,7 @@ public class ScoreManager : MonoBehaviour
 {
     public float[] scores = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
     public TMP_InputField[] playersIF;
+    public TMP_Text[] playerNameboard;
     public TMP_Text[] playerScoreboard;
     public TMP_Text[] miniScoreboard;
     public string[] names;
@@ -26,10 +27,9 @@ public class ScoreManager : MonoBehaviour
 
         FetchNames();
 
-        //for (int i = 0; i < playerScoreboard.Length; i++)
         for (int i = 0; i < names.Length; i++)
         {
-            playerScoreboard[i].text = names[i] + ": 0.0";
+            playerNameboard[i].text = names[i];
             miniScoreboard[i].text = scores[i].ToString();
             TextMeshProUGUI placeholderText = playersIF[i].placeholder as TextMeshProUGUI;
             placeholderText.text = names[i];
@@ -49,7 +49,8 @@ public class ScoreManager : MonoBehaviour
                 if (float.TryParse(input, out value))
                 {
                     scores[i] += value;
-                    playerScoreboard[i].text = names[i] + ": " + scores[i].ToString();
+                    playerScoreboard[i].text = scores[i].ToString();
+                    //playerNameboard[i].text = names[i];
                     miniScoreboard[i].text = scores[i].ToString();
                 }
                 else
@@ -77,10 +78,9 @@ public class ScoreManager : MonoBehaviour
 
         if (File.Exists(filePath))
         {
-            // Read all lines
+
             string[] lines = File.ReadAllLines(filePath);
 
-            // Trim and store valid names
             foreach (string line in lines)
             {
                 string trimmed = line.Trim();
@@ -89,7 +89,7 @@ public class ScoreManager : MonoBehaviour
             }
 
             Debug.Log($"Loaded {names_.Count} names:");
-            foreach (string n in names)
+            foreach (string n in names_)
                 Debug.Log(n);
         }
         else
