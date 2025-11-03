@@ -65,7 +65,7 @@ MonoBehaviour:
     - line: '|     width: 1'
     - line: '|     height: 1'
     - line: '|   m_SplashScreenLogos:'
-    - line: '|   - logo: {fileID: 21300000, guid: 484526d162485634dbaa27c6ace2519e,
+    - line: '|   - logo: {fileID: 21300000, guid: ca59a19a9f9e3f84fb31c7b5281f17d8,
         type: 3}'
     - line: '|     duration: 2'
     - line: '|   m_VirtualRealitySplashScreen: {instanceID: 0}'
@@ -170,7 +170,7 @@ MonoBehaviour:
     - line: '|   loadStoreDebugModeEnabled: 0'
     - line: '|   visionOSBundleVersion: 1.0'
     - line: '|   tvOSBundleVersion: 1.0'
-    - line: '|   bundleVersion: 2.0'
+    - line: '|   bundleVersion: 2.1'
     - line: '|   preloadedAssets:'
     - line: '|   - {fileID: -944628639613478452, guid: 3590b91b4603b465dbb4216d601bff33,
         type: 3}'
