@@ -14,6 +14,8 @@ public class ScoreManager : MonoBehaviour
     public AudioSource AS;
     public string fileName = "names.txt";
     private List<string> names_ = new List<string>();
+    private bool roundFound = false;
+    public TMP_Text roundNumber;
 
     private void Start()
     {
@@ -85,7 +87,18 @@ public class ScoreManager : MonoBehaviour
             {
                 string trimmed = line.Trim();
                 if (!string.IsNullOrEmpty(trimmed))
-                    names_.Add(trimmed);
+                {
+                    if(!roundFound)
+                    {
+                        roundFound = true;
+                        roundNumber.text = "ivDÛ " + trimmed;
+                    }
+                    else
+                    {
+                        names_.Add(trimmed);
+                    }                    
+                }
+                    
             }
 
             Debug.Log($"Loaded {names_.Count} names:");
