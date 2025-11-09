@@ -5547,7 +5547,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "we\xC1vbt mvaviY I AmvaviY"
+  m_text: "we\xC1vb: mvaviY I AmvaviY"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: e31d075a06e04044995e0a6346620dce, type: 2}
   m_sharedMaterial: {fileID: 4497561167170138756, guid: e31d075a06e04044995e0a6346620dce, type: 2}
