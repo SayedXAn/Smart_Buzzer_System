@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using System.IO;
+using System.Linq;
 
 public class ScoreManager : MonoBehaviour
 {
@@ -17,7 +18,8 @@ public class ScoreManager : MonoBehaviour
     //private bool roundFound = false;
     public TMP_Text roundNumber;
     public TMP_InputField roundIF;
-
+    public TMP_Text leaderboardText;
+    public GameObject leaderboardPanel;
     private void Start()
     {
         if (Display.displays.Length > 1)
@@ -64,7 +66,7 @@ public class ScoreManager : MonoBehaviour
             }
             if(!string.IsNullOrEmpty(roundIF.text.Trim()))
             {
-                roundNumber.text = "ivDÛ " + roundIF.text.Trim();
+                roundNumber.text = "ivDÛ: " + roundIF.text.Trim();
                 roundIF.text = "";
             }
         }
@@ -128,6 +130,29 @@ public class ScoreManager : MonoBehaviour
     public List<string> GetNames()
     {
         return names_;
+    }
+
+    public void ShowLeaderboard()
+    {
+        //calculate top scorer
+        float topScore = scores[0];
+        for (int i = 1; i < scores.Length; i++)
+        {
+            if(scores[i] > topScore)
+            {
+                topScore = scores[i];
+            }
+        }
+        string winnerNames = "";
+        for (int i = 0; i < scores.Length; i++)
+        {
+            if(scores[i] == topScore)
+            {
+                winnerNames += names[i] + "\n";
+            }
+        }
+        leaderboardText.text = winnerNames;
+        leaderboardPanel.SetActive(true);
     }
 
 }
