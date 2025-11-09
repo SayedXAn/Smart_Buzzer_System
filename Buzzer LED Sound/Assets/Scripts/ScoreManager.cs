@@ -17,7 +17,7 @@ public class ScoreManager : MonoBehaviour
     private List<string> names_ = new List<string>();
     //private bool roundFound = false;
     public TMP_Text roundNumber;
-    public TMP_InputField roundIF;
+    public TMP_Dropdown roundDD;
     public TMP_Text leaderboardText;
     public GameObject leaderboardPanel;
     private void Start()
@@ -39,7 +39,7 @@ public class ScoreManager : MonoBehaviour
             TextMeshProUGUI placeholderText = playersIF[i].placeholder as TextMeshProUGUI;
             placeholderText.text = names[i];
         }
-
+        SetRoundNameFromDropDown();
     }
 
 
@@ -64,11 +64,12 @@ public class ScoreManager : MonoBehaviour
                 }
                 playersIF[i].text = "";
             }
-            if(!string.IsNullOrEmpty(roundIF.text.Trim()))
-            {
-                roundNumber.text = "ivDÛ: " + roundIF.text.Trim();
-                roundIF.text = "";
-            }
+            //if(!string.IsNullOrEmpty(roundIF.text.Trim()))
+            //{
+            //    roundNumber.text = "ivDÛ: " + roundIF.text.Trim();
+            //    roundIF.text = "";
+            //}
+            //Using dropdown method
         }
         
     }
@@ -153,6 +154,11 @@ public class ScoreManager : MonoBehaviour
         }
         leaderboardText.text = winnerNames;
         leaderboardPanel.SetActive(true);
+    }
+    
+    public void SetRoundNameFromDropDown()
+    {
+        roundNumber.text = roundDD.captionText.text;
     }
 
 }
