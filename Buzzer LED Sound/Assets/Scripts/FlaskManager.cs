@@ -10,6 +10,7 @@ public class FlaskManager : MonoBehaviour
     public ScoreManager scoreManager;
     public TMP_Text statusText;
     public TMP_Text winnerText;
+    public TMP_Text[] otherText;
     public TMP_Text adminWinnerText;
     public TMP_Text adminOnOff;
     public TMP_Text adminLog;
