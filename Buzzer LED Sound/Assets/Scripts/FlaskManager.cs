@@ -27,12 +27,25 @@ public class FlaskManager : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.N))
         {
-            StartCoroutine(SendUnityCommand("unity_start"));
+            StartCoroutine(CountDownBeforeStart());
         }
         if (Input.GetKeyDown(KeyCode.F))
         {
             StartCoroutine(SendUnityCommand("unity_stop"));
+            statusText.text = "";
         }
+    }
+    IEnumerator CountDownBeforeStart()
+    {
+        int countdown = 3;
+        while (countdown > 0)
+        {
+            statusText.text = countdown.ToString();
+            yield return new WaitForSeconds(1f);
+            countdown--;
+        }
+        statusText.text = "GO!";
+        StartCoroutine(SendUnityCommand("unity_start"));
     }
     IEnumerator SendUnityCommand(string endpoint)
     {
@@ -71,7 +84,7 @@ public class FlaskManager : MonoBehaviour
                     adminLog.text = json;
                     if (state.isGameOn)
                     {
-                        statusText.text = "cÖ¯‘Z";
+                        statusText.text = "GO!";
                         adminOnOff.text = "READY";
                         winnerText.text = "";
                         adminWinnerText.text = "---";
@@ -80,7 +93,7 @@ public class FlaskManager : MonoBehaviour
                     }
                     else
                     {
-                        statusText.text = "";
+                        //statusText.text = "";
                         adminOnOff.text = "Game Off";
 
                         if (!string.IsNullOrEmpty(state.winner))

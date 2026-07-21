@@ -39,7 +39,7 @@ public class ScoreManager : MonoBehaviour
             TextMeshProUGUI placeholderText = playersIF[i].placeholder as TextMeshProUGUI;
             placeholderText.text = names[i];
         }
-        SetRoundNameFromDropDown();
+        //SetRoundNameFromDropDown();
     }
 
 

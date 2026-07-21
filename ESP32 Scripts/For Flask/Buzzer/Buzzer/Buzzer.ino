@@ -12,7 +12,7 @@ const char* ssid = "Dark_Experience";
 const char* password = "payforpassword";
 const char* flaskServer = "http://192.168.1.104:5000";
 
-String myID = "F; // Unique buzzer ID
+String myID = "F"; // Unique buzzer ID
 bool gameActive = false;
 
 void setup() {
