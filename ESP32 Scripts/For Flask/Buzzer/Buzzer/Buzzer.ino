@@ -8,11 +8,11 @@
 #define NUM_LEDS 24 
 Adafruit_NeoPixel strip(NUM_LEDS, LED_PIN, NEO_GRB + NEO_KHZ800);
 
-const char* ssid = "Experience";
+const char* ssid = "Dark_Experience";
 const char* password = "payforpassword";
-const char* flaskServer = "http://192.168.0.101:5000";
+const char* flaskServer = "http://192.168.1.104:5000";
 
-String myID = "G"; // Unique buzzer ID
+String myID = "F; // Unique buzzer ID
 bool gameActive = false;
 
 void setup() {
