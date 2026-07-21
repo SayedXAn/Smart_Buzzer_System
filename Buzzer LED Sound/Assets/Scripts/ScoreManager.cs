@@ -6,7 +6,7 @@ using System.Linq;
 
 public class ScoreManager : MonoBehaviour
 {
-    public float[] scores = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+    public float[] scores = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
     public TMP_InputField[] playersIF;
     public TMP_Text[] playerNameboard;
     public TMP_Text[] playerScoreboard;
