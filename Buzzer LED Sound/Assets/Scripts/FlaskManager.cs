@@ -120,7 +120,7 @@ public class FlaskManager : MonoBehaviour
     }
     public void AssignNamesToState(string id)
     {
-        string[] alphabets = { "A", "B", "C", "D", "E", "F", "G", "H", "I", "J" };
+        string[] alphabets = { "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L"};
         for(int i = 0; i < alphabets.Length; i++)
         {
             if(alphabets[i] == id)
