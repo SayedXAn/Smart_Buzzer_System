@@ -33,6 +33,8 @@ public class FlaskManager : MonoBehaviour
         {
             StartCoroutine(SendUnityCommand("unity_stop"));
             statusText.text = "";
+            statusText.gameObject.transform.GetChild(0).gameObject.SetActive(false);
+            statusText.gameObject.transform.GetChild(1).gameObject.SetActive(false);
         }
     }
     IEnumerator CountDownBeforeStart()
@@ -44,7 +46,7 @@ public class FlaskManager : MonoBehaviour
             yield return new WaitForSeconds(1f);
             countdown--;
         }
-        statusText.text = "GO!";
+        statusText.text = "";
         StartCoroutine(SendUnityCommand("unity_start"));
     }
     IEnumerator SendUnityCommand(string endpoint)
@@ -84,7 +86,9 @@ public class FlaskManager : MonoBehaviour
                     adminLog.text = json;
                     if (state.isGameOn)
                     {
-                        statusText.text = "GO!";
+                        statusText.text = "";
+                        statusText.gameObject.transform.GetChild(0).gameObject.SetActive(true);
+                        statusText.gameObject.transform.GetChild(1).gameObject.SetActive(true);
                         adminOnOff.text = "READY";
                         winnerText.text = "";
                         adminWinnerText.text = "---";
@@ -94,6 +98,8 @@ public class FlaskManager : MonoBehaviour
                     else
                     {
                         //statusText.text = "";
+                        statusText.gameObject.transform.GetChild(0).gameObject.SetActive(false);
+                        statusText.gameObject.transform.GetChild(1).gameObject.SetActive(false);
                         adminOnOff.text = "Game Off";
 
                         if (!string.IsNullOrEmpty(state.winner))
