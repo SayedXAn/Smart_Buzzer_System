@@ -110,14 +110,15 @@ public class FlaskManager : MonoBehaviour
                     }
                     else
                     {
-                        //statusText.text = "";
-                        //statusText.gameObject.transform.GetChild(0).gameObject.SetActive(false);
-                        //statusText.gameObject.transform.GetChild(1).gameObject.SetActive(false);
+                        
                         adminOnOff.text = "Game Off";
 
                         if (!string.IsNullOrEmpty(state.winner))
                         {
                             //winnerText.text = "Winner: " + state.winner;
+                            statusText.text = "";
+                            statusText.gameObject.transform.GetChild(0).gameObject.SetActive(false);
+                            statusText.gameObject.transform.GetChild(1).gameObject.SetActive(false);
                             AssignNamesToState(state.winner);                            
                         }
                         else
